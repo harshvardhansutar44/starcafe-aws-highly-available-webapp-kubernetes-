@@ -48,7 +48,7 @@ pipeline{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
                        sh "docker build -t starcafe ."
-                       sh "docker tag starbucks harshvardhan44/starcafe:latest "
+                       sh "docker tag starcafe harshvardhan44/starcafe:latest "
                        sh "docker push harshvardhan44/starcafe:latest "
                     }
                 }
@@ -75,7 +75,7 @@ pipeline{
             emailext (
                 subject: "Pipeline ${buildStatus}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: """
-                    <p>This is a Jenkins starbucks CICD pipeline status.</p>
+                    <p>This is a Jenkins starcafe CICD pipeline status.</p>
                     <p>Project: ${env.JOB_NAME}</p>
                     <p>Build Number: ${env.BUILD_NUMBER}</p>
                     <p>Build Status: ${buildStatus}</p>
