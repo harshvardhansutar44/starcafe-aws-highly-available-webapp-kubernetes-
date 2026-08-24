@@ -15,21 +15,21 @@ pipeline{
         }
         stage('Checkout from Git'){
             steps{
-                git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/Aseemakram19/starbucks-kubernetes.git'
+                git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/harshvardhansutar44/starcafe-aws-highly-available-webapp-kubernetes-.git'
             }
         }
         stage("Sonarqube Analysis "){
             steps{
                 withSonarQubeEnv('SonarQube') {
-                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=starbucks \
-                    -Dsonar.projectKey=starbucks '''
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=starcafe \
+                    -Dsonar.projectKey=starcafe '''
                 }
             }
         }
         stage("quality gate"){
            steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
+                    waitForQualityGate abortPipeline: false, credentialsId: 'SonarQube' 
                 }
             } 
         }
@@ -47,21 +47,21 @@ pipeline{
             steps{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
-                       sh "docker build -t starbucks ."
-                       sh "docker tag starbucks aseemakram19/starbucks:latest "
-                       sh "docker push aseemakram19/starbucks:latest "
+                       sh "docker build -t starcafe ."
+                       sh "docker tag starbucks harshvardhan44/starcafe:latest "
+                       sh "docker push harshvardhan44/starcafe:latest "
                     }
                 }
             }
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image aseemakram19/starbucks:latest > trivyimage.txt" 
+                sh "trivy image harshvardhan44/starcafe:latest > trivyimage.txt" 
             }
         }
         stage('App Deploy to Docker container'){
             steps{
-                sh 'docker run -d --name starbucks -p 3000:3000 aseemakram19/starbucks:latest'
+                sh 'docker run -d --name starcafe -p 3000:3000 harshvardhan44/starcafe:latest'
             }
         }
 
@@ -82,9 +82,9 @@ pipeline{
                     <p>Started by: ${buildUser}</p>
                     <p>Build URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
                 """,
-                to: 'mohdaseemakram19@gmail.com',
-                from: 'mohdaseemakram19@gmail.com',
-                replyTo: 'mohdaseemakram19@gmail.com',
+                to: 'harshvardhansutar5050@gmail.com',
+                from: 'harshvardhansutar5050@gmail.com',
+                replyTo: 'harshvardhansutar5050@gmail.com',
                 mimeType: 'text/html',
                 attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
             )
