@@ -1,28 +1,49 @@
 #!/bin/bash
-# Script to install Grafana on a Linux instance
+# Script to install Grafana OSS on Ubuntu/Debian Linux
+
+set -e
 
 # Update package list and install dependencies
-sudo apt-get install -y apt-transport-https software-properties-common wget
+sudo apt-get update
+sudo apt-get install -y apt-transport-https wget gnupg
 
 # Create a directory for Grafana's GPG key
-sudo mkdir -p /etc/apt/keyrings/
+sudo mkdir -p /etc/apt/keyrings
 
 # Add Grafana's GPG key
-wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+sudo wget -O /etc/apt/keyrings/grafana.asc https://apt.grafana.com/gpg-full.key
 
-# Add Grafana's repository to the sources list
-echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+# Set correct permissions for the GPG key
+sudo chmod 644 /etc/apt/keyrings/grafana.asc
+
+# Add Grafana's stable APT repository
+echo "deb [signed-by=/etc/apt/keyrings/grafana.asc] https://apt.grafana.com stable main" | \
+sudo tee /etc/apt/sources.list.d/grafana.list > /dev/null
 
 # Update package lists
-sudo apt-get update -y
+sudo apt-get update
 
-# Install the latest OSS release of Grafana
-sudo apt-get install grafana -y
+# Install the latest stable Grafana OSS release
+sudo apt-get install -y grafana
 
-# Start and enable Grafana service
-sudo systemctl start grafana-server
-sudo systemctl enable grafana-server
+# Enable Grafana to start automatically at boot
+# and start the Grafana service now
+sudo systemctl enable --now grafana-server
 
+# Check Grafana service status
+sudo systemctl status grafana-server --no-pager
 
-#After installation, you can access Grafana at:
-# http://your-server-ip:3000 (default user: admin, password: admin)
+echo ""
+echo "=========================================="
+echo "Grafana installation completed!"
+echo "=========================================="
+echo ""
+echo "Grafana service status:"
+sudo systemctl is-active grafana-server
+
+echo ""
+echo "Access Grafana at:"
+echo "http://YOUR-SERVER-IP:3000"
+echo ""
+echo "Default username: admin"
+echo "You will be prompted to change the default password on first login."
