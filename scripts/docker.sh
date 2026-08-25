@@ -8,11 +8,8 @@ sudo apt-get update -y
 sudo apt-get install docker.io -y
 
 # Add the 'ubuntu' and 'jenkins' users to the 'docker' group to allow running Docker without sudo
-sudo usermod -aG docker ubuntu 
-sudo usermod -aG docker jenkins 
-
-# Apply the new group settings immediately
-newgrp docker
+sudo usermod -aG docker ubuntu
+sudo usermod -aG docker jenkins
 
 # Set correct permissions for the Docker socket to allow 'docker' group members to access it
 sudo chmod 660 /var/run/docker.sock
@@ -22,6 +19,7 @@ sudo chown root:docker /var/run/docker.sock
 sudo systemctl restart docker
 
 # Verify installation
-docker -version
+docker --version
+
 # Run SonarQube container in detached mode with port mapping
 #docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
