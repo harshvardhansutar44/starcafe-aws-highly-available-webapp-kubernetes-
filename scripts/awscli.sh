@@ -1,11 +1,14 @@
 #!/bin/bash
 # Script to install AWS CLI on an instance
 
-# Download the AWS CLI installer
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+# Update package list
+sudo apt-get update -y
 
-# Install unzip package if not already installed
-sudo apt-get install unzip -y
+# Install required dependencies
+sudo apt-get install -y curl unzip
+
+# Download the AWS CLI installer for x86_64
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 
 # Unzip the AWS CLI installer
 unzip awscliv2.zip
